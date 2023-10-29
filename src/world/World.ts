@@ -62,16 +62,14 @@ export default class World {
         }
     }
 
-    private _checkOverlaps(): void {
+    private _checkDeviceOverlaps(): void {
         for (let i = 0; i < this._devices.length; i++) {
             for (let j = 0; j < this._devices.length; j++) {
                 const deviceA = this._devices[i];
                 const deviceB = this._devices[j];
 
                 if (deviceA.id !== deviceB.id) {
-                    if (
-                        this._detectDeviceOverlap(deviceA, deviceB) === true
-                    ) {
+                    if (this._detectDeviceOverlap(deviceA, deviceB) === true) {
                         deviceA.color = "red";
                         deviceB.color = "red";
                     }
@@ -80,8 +78,49 @@ export default class World {
         }
     }
 
+    //Sample code usefull for mouse/touch detection.
+    /* private _clamp(min: number, currentValue: number, max: number): number {
+        return Math.min(Math.max(currentValue, min), max);
+    }
+
+    private _detectPointerOverlap(event: PointerEvent, device: Device): boolean {
+        const closestPointX = this._clamp(
+            device.x - device.width * 0.5,
+            event.clientX,
+            device.x + device.width * 0.5
+        );
+        const closestPointY = this._clamp(
+            device.y - device.height * 0.5,
+            event.clientY,
+            device.y + device.height * 0.5
+        );
+
+        const distanceX = closestPointX - event.clientX;
+        const distanceY = closestPointY - event.clientY;
+
+        const distance = Math.sqrt(
+            distanceX * distanceX + distanceY * distanceY
+        );
+
+        if (distance <= 25) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private _checkMouseOverlaps(event: PointerEvent): void {
+        for (let i = 0; i < this._devices.length; i++){
+            const device = this._devices[i];
+
+            if (this._detectPointerOverlap(event, device)) {
+                console.log("Pointer collision");
+            }
+        }
+    } */
+
     private _update(): void {
-        this._checkOverlaps();
+        this._checkDeviceOverlaps();
         this._clear();
         this._renderDevices();
 
@@ -93,6 +132,7 @@ export default class World {
     init(): void {
         window.addEventListener("pointerdown", (event) => {
             this._pushDevice(event.clientX - 50, event.clientY - 50, 100, 100);
+            /* this._checkMouseOverlaps(event); */
         });
 
         window.addEventListener("resize", () => {

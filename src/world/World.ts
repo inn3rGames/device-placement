@@ -10,7 +10,7 @@ export default class World {
 
     private _devices: Array<Device> = [];
 
-    init(): void {
+    private _clear(): void {
         this._context.clearRect(0, 0, window.innerWidth, window.innerHeight);
         this._context.canvas.width = window.innerWidth;
         this._context.canvas.height = window.innerHeight;
@@ -23,7 +23,7 @@ export default class World {
     }
 
     private _handleResize(): void {
-        this.init();
+        this._clear();
         this._renderDevices();
     }
 
@@ -34,17 +34,73 @@ export default class World {
         height: number
     ): void {
         this._devices.push(
-            new Device(x, y, width, height, this._context, "green")
+            new Device(
+                "Device" + (this._devices.length - 1),
+                x,
+                y,
+                width,
+                height,
+                this._context,
+                "green"
+            )
         );
     }
 
-    handleInput(): void {
+    private _detectDeviceOverlap(deviceA: Device, deviceB: Device): boolean {
+        if (
+            deviceA.x - deviceA.width * 0.5 <=
+                deviceB.x + deviceB.width * 0.5 &&
+            deviceA.x + deviceA.width * 0.5 >=
+                deviceB.x - deviceB.width * 0.5 &&
+            deviceA.y - deviceA.height * 0.5 <=
+                deviceB.y + deviceB.height * 0.5 &&
+            deviceA.y + deviceA.height * 0.5 >= deviceB.y - deviceB.height * 0.5
+        ) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private _checkOverlaps(): void {
+        for (let i = 0; i < this._devices.length; i++) {
+            for (let j = 0; j < this._devices.length; j++) {
+                const deviceA = this._devices[i];
+                const deviceB = this._devices[j];
+
+                if (deviceA.id !== deviceB.id) {
+                    if (
+                        this._detectDeviceOverlap(deviceA, deviceB) === true
+                    ) {
+                        deviceA.color = "red";
+                        deviceB.color = "red";
+                    }
+                }
+            }
+        }
+    }
+
+    private _update(): void {
+        this._checkOverlaps();
+        this._clear();
+        this._renderDevices();
+
+        window.requestAnimationFrame(() => {
+            this._update();
+        });
+    }
+
+    init(): void {
         window.addEventListener("pointerdown", (event) => {
             this._pushDevice(event.clientX - 50, event.clientY - 50, 100, 100);
         });
 
         window.addEventListener("resize", () => {
             this._handleResize();
+        });
+
+        window.requestAnimationFrame(() => {
+            this._update();
         });
     }
 }

@@ -3,4 +3,3 @@ import World from "./world/World";
 
 const world = new World();
 world.init();
-world.handleInput();

@@ -28,8 +28,18 @@ export default class Device {
 
     private _render(): void {
         this._context.beginPath();
+
         this._context.fillStyle = this._color;
-        this._context.fillRect(this._x, this._y, this._width, this._height);
+        this._context.fillRect(
+            this._x + 5,
+            this._y + 5,
+            this._width - 10,
+            this._height - 10
+        );
+
+        this._context.strokeStyle = this._color;
+        this._context.strokeRect(this._x, this._y, this._width, this._height);
+
         this._context.closePath();
     }
 }

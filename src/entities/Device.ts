@@ -9,6 +9,8 @@ export default class Device {
 
     color: string;
 
+    resolved: boolean = false;
+
     constructor(
         id: string,
         x: number,

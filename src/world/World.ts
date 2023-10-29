@@ -63,22 +63,29 @@ export default class World {
         }
     }
 
-    private _sideOfCollisionY(deviceA: Device, deviceB: Device): void {
-        const down =
-            deviceB.y +
-            deviceB.height * 0.5 -
-            (deviceA.y - deviceA.height * 0.5);
+    private _resolveOverlap(deviceA: Device, deviceB: Device): void {
+        const left =
+            deviceB.x + deviceB.width * 0.5 - (deviceA.x - deviceA.width * 0.5);
 
         const top =
             deviceA.y +
             deviceA.height * 0.5 -
             (deviceB.y - deviceB.height * 0.5);
 
-        const side = Math.min(down, top);
+        const right =
+            deviceA.x + deviceA.width * 0.5 - (deviceB.x - deviceB.width * 0.5);
 
-        console.log("run1");
-        if (side === down) {
-            deviceA.y = deviceA.y + down + 10;
+        const down =
+            deviceB.y +
+            deviceB.height * 0.5 -
+            (deviceA.y - deviceA.height * 0.5);
+
+        const side = Math.min(left, top, right, down);
+
+        deviceA.resolved = true;
+
+        if (side === left) {
+            deviceA.x = deviceA.x + left + 10;
             return;
         }
 
@@ -86,20 +93,9 @@ export default class World {
             deviceA.y = deviceA.y - top - 10;
             return;
         }
-    }
 
-    private _sideOfCollisionX(deviceA: Device, deviceB: Device): void {
-        const left =
-            deviceB.x + deviceB.width * 0.5 - (deviceA.x - deviceA.width * 0.5);
-
-        const right =
-            deviceA.x + deviceA.width * 0.5 - (deviceB.x - deviceB.width * 0.5);
-
-        const side = Math.min(left, right);
-
-        console.log("run2");
-        if (side === left) {
-            deviceA.x = deviceA.x + left + 10;
+        if (side === down) {
+            deviceA.y = deviceA.y + down + 10;
             return;
         }
 
@@ -112,22 +108,14 @@ export default class World {
     private _checkDeviceOverlaps(): void {
         for (let i = 0; i < this._devices.length; i++) {
             const deviceA = this._devices[i];
+            deviceA.resolved = false;
             for (let j = 0; j < this._devices.length; j++) {
                 const deviceB = this._devices[j];
-
-                deviceA.color = "green";
-                deviceB.color = "green";
                 if (deviceA.id !== deviceB.id) {
                     if (this._detectDeviceOverlap(deviceA, deviceB) === true) {
-                        deviceA.color = "red";
-                        deviceB.color = "red";
-                        this._sideOfCollisionX(deviceA, deviceB);
-                    }
-
-                    if (this._detectDeviceOverlap(deviceA, deviceB) === true) {
-                        deviceA.color = "red";
-                        deviceB.color = "red";
-                        this._sideOfCollisionY(deviceA, deviceB);
+                        if (deviceA.resolved === false) {
+                            this._resolveOverlap(deviceA, deviceB);
+                        }
                     }
                 }
             }

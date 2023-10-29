@@ -65,7 +65,6 @@ export default class World {
                 deviceB.y + deviceB.height * 0.5 &&
             deviceA.y + deviceA.height * 0.5 >= deviceB.y - deviceB.height * 0.5
         ) {
-            console.log("Overlap");
             return true;
         } else {
             return false;
@@ -115,7 +114,6 @@ export default class World {
     }
 
     private _checkDeviceOverlaps(): void {
-        console.log("working");
         for (let i = 0; i < this._devices.length; i++) {
             const deviceA = this._devices[i];
             deviceA.resolved = false;
@@ -193,8 +191,8 @@ export default class World {
                 this._colors[Math.floor(Math.random() * this._colors.length)];
 
             this._pushDevice(
-                event.clientX - width * 0.5,
-                event.clientY - height * 0.5,
+                event.clientX,
+                event.clientY,
                 width,
                 height,
                 color

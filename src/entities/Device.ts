@@ -36,14 +36,19 @@ export default class Device {
 
         this._context.fillStyle = this.color;
         this._context.fillRect(
-            this.x + 5,
-            this.y + 5,
-            this.width - 10,
-            this.height - 10
+            this.x - this.width * 0.5 + 2.5 - 0.5,
+            this.y - this.height * 0.5 + 2.5 - 0.5,
+            this.width - 5,
+            this.height - 5
         );
 
         this._context.strokeStyle = this.color;
-        this._context.strokeRect(this.x, this.y, this.width, this.height);
+        this._context.strokeRect(
+            this.x - this.width * 0.5,
+            this.y - this.height * 0.5,
+            this.width,
+            this.height
+        );
 
         this._context.closePath();
     }

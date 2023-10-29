@@ -9,6 +9,14 @@ export default class World {
     ) as CanvasRenderingContext2D;
 
     private _devices: Array<Device> = [];
+    private _colors: Array<string> = [
+        "red",
+        "green",
+        "blue",
+        "yellow",
+        "purple",
+    ];
+    private _sizes: Array<number> = [50, 100, 150, 200];
 
     private _clear(): void {
         this._context.clearRect(0, 0, window.innerWidth, window.innerHeight);
@@ -31,7 +39,8 @@ export default class World {
         x: number,
         y: number,
         width: number,
-        height: number
+        height: number,
+        color: string
     ): void {
         this._devices.push(
             new Device(
@@ -41,7 +50,7 @@ export default class World {
                 width,
                 height,
                 this._context,
-                "green"
+                color
             )
         );
     }
@@ -56,7 +65,7 @@ export default class World {
                 deviceB.y + deviceB.height * 0.5 &&
             deviceA.y + deviceA.height * 0.5 >= deviceB.y - deviceB.height * 0.5
         ) {
-            console.log("Collision");
+            console.log("Overlap");
             return true;
         } else {
             return false;
@@ -106,6 +115,7 @@ export default class World {
     }
 
     private _checkDeviceOverlaps(): void {
+        console.log("working");
         for (let i = 0; i < this._devices.length; i++) {
             const deviceA = this._devices[i];
             deviceA.resolved = false;
@@ -175,8 +185,20 @@ export default class World {
 
     init(): void {
         window.addEventListener("pointerdown", (event) => {
-            this._pushDevice(event.clientX - 50, event.clientY - 50, 100, 100);
-            /* this._checkMouseOverlaps(event); */
+            const width =
+                this._sizes[Math.floor(Math.random() * this._sizes.length)];
+            const height =
+                this._sizes[Math.floor(Math.random() * this._sizes.length)];
+            const color =
+                this._colors[Math.floor(Math.random() * this._colors.length)];
+
+            this._pushDevice(
+                event.clientX - width * 0.5,
+                event.clientY - height * 0.5,
+                width,
+                height,
+                color
+            );
         });
 
         window.addEventListener("resize", () => {

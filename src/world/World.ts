@@ -1,6 +1,8 @@
 import Device from "../entities/Device";
 
+// Describe our World class where all the action happens
 export default class World {
+    // Expect our canvas and context to never return null in the TypeScript context
     private _canvas: HTMLCanvasElement = document.getElementById(
         "desktop"
     ) as HTMLCanvasElement;
@@ -8,7 +10,10 @@ export default class World {
         "2d"
     ) as CanvasRenderingContext2D;
 
+    // Store devices
     private _devices: Array<Device> = [];
+
+    // Values for random device generation
     private _colors: Array<string> = [
         "red",
         "green",
@@ -18,23 +23,27 @@ export default class World {
     ];
     private _sizes: Array<number> = [50, 100, 150, 200];
 
+    // Clear our screen before each update
     private _clear(): void {
         this._context.clearRect(0, 0, window.innerWidth, window.innerHeight);
         this._context.canvas.width = window.innerWidth;
         this._context.canvas.height = window.innerHeight;
     }
 
+    // Draw devices on screen
     private _renderDevices(): void {
         for (let i = 0; i < this._devices.length; i++) {
             this._devices[i].render();
         }
     }
 
+    // Take care of resizing events
     private _handleResize(): void {
         this._clear();
         this._renderDevices();
     }
 
+    // Add new devices
     private _pushDevice(
         x: number,
         y: number,
@@ -55,6 +64,7 @@ export default class World {
         );
     }
 
+    // Here we check if two devices overlap
     private _detectDeviceOverlap(deviceA: Device, deviceB: Device): boolean {
         if (
             deviceA.x - deviceA.width * 0.5 <=
@@ -71,18 +81,17 @@ export default class World {
         }
     }
 
+    // Resolve the overlap by translating the first device (deviceA)
     private _resolveOverlap(deviceA: Device, deviceB: Device): void {
+        // Check on which side devices overlap
         const left =
             deviceB.x + deviceB.width * 0.5 - (deviceA.x - deviceA.width * 0.5);
-
         const top =
             deviceA.y +
             deviceA.height * 0.5 -
             (deviceB.y - deviceB.height * 0.5);
-
         const right =
             deviceA.x + deviceA.width * 0.5 - (deviceB.x - deviceB.width * 0.5);
-
         const down =
             deviceB.y +
             deviceB.height * 0.5 -
@@ -92,6 +101,7 @@ export default class World {
 
         deviceA.resolved = true;
 
+        // Translate (move) the first device (deviceA) so it no longer overlaps the second device (deviceB)
         if (side === left) {
             deviceA.x = deviceA.x + left + 10;
             return;
@@ -113,12 +123,15 @@ export default class World {
         }
     }
 
+    // Check overlaps for all existing devices
     private _checkDeviceOverlaps(): void {
         for (let i = 0; i < this._devices.length; i++) {
             const deviceA = this._devices[i];
             deviceA.resolved = false;
             for (let j = 0; j < this._devices.length; j++) {
                 const deviceB = this._devices[j];
+
+                // Skip checking if the device is itself
                 if (deviceA.id !== deviceB.id) {
                     if (this._detectDeviceOverlap(deviceA, deviceB) === true) {
                         if (deviceA.resolved === false) {
@@ -171,6 +184,7 @@ export default class World {
         }
     } */
 
+    // Update world
     private _update(): void {
         this._checkDeviceOverlaps();
         this._clear();
@@ -181,6 +195,7 @@ export default class World {
         });
     }
 
+    // Initialize world
     init(): void {
         window.addEventListener("pointerdown", (event) => {
             const width =

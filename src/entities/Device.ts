@@ -1,3 +1,4 @@
+// Describe our Device class
 export default class Device {
     id: string;
     x: number;
@@ -31,6 +32,7 @@ export default class Device {
         this.render();
     }
 
+    // Graphical representation for our device
     render(): void {
         this._context.beginPath();
 

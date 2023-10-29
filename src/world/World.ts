@@ -102,13 +102,13 @@ export default class World {
             return;
         }
 
-        if (side === down) {
-            deviceA.y = deviceA.y + down + 10;
+        if (side === right) {
+            deviceA.x = deviceA.x - right - 10;
             return;
         }
 
-        if (side === right) {
-            deviceA.x = deviceA.x - right - 10;
+        if (side === down) {
+            deviceA.y = deviceA.y + down + 10;
             return;
         }
     }

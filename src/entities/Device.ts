@@ -23,10 +23,10 @@ export default class Device {
         this._context = context;
         this._color = color;
 
-        this._render();
+        this.render();
     }
 
-    private _render(): void {
+    render(): void {
         this._context.beginPath();
 
         this._context.fillStyle = this._color;

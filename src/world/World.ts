@@ -8,31 +8,43 @@ export default class World {
         "2d"
     ) as CanvasRenderingContext2D;
 
-    create(): void {
+    private _devices: Array<Device> = [];
+
+    init(): void {
+        this._context.clearRect(0, 0, window.innerWidth, window.innerHeight);
         this._context.canvas.width = window.innerWidth;
         this._context.canvas.height = window.innerHeight;
+    }
 
-        const device1 = new Device(
-            50,
-            50,
-            500,
-            500,
-            this._context,
-            "blue"
-        );
+    private _renderDevices(): void {
+        for (let i = 0; i < this._devices.length; i++) {
+            this._devices[i].render();
+        }
+    }
 
-        const device2 = new Device(
-            100,
-            150,
-            50,
-            50,
-            this._context,
-            "green"
+    private _handleResize(): void {
+        this.init();
+        this._renderDevices();
+    }
+
+    private _pushDevice(
+        x: number,
+        y: number,
+        width: number,
+        height: number
+    ): void {
+        this._devices.push(
+            new Device(x, y, width, height, this._context, "green")
         );
     }
 
-    handleResize(): void {
-        this._context.clearRect(0, 0, window.innerWidth, window.innerHeight);
-        this.create();
+    handleInput(): void {
+        window.addEventListener("pointerdown", (event) => {
+            this._pushDevice(event.clientX - 50, event.clientY - 50, 100, 100);
+        });
+
+        window.addEventListener("resize", () => {
+            this._handleResize();
+        });
     }
 }
